@@ -118,7 +118,6 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
-
 /**
  * Средняя
  *
@@ -127,4 +126,28 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val ad = d - a;
+    val cb = b - c;
+
+    // not cross
+    if (ad < 0 || cb < 0) {
+        return -1;
+    }
+    // cd includes ab
+    if (c <= a && c <= b && d >= a && d >= b) {
+        return b - a
+    }
+
+    // ab includes cd
+    if (a <= c && a <= d && b >= c && b >= d) {
+        return d - c
+    }
+
+    // partial includes
+    return if (d > b) {
+        cb
+    } else {
+        ad
+    }
+}
