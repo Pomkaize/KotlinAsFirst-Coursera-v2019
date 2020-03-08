@@ -3,6 +3,10 @@
 package lesson3.task1
 
 import kotlin.math.sqrt
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.max
 
 /**
  * Пример
@@ -196,8 +200,29 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
 
+fun main() {
+    squareSequenceDigit(10)
+}
+
+fun squareSequenceDigit(n: Int): Int {
+    var digitCounter = 0;
+    var number = 0;
+    var sqr = 0;
+    var currentNumberDigitCounter = 0;
+
+    while (n > digitCounter) {
+        number += 1
+        sqr = number * number
+        currentNumberDigitCounter = floor(log10(sqr.toDouble())).toInt() + 1
+        digitCounter += currentNumberDigitCounter
+    }
+
+    val nRelativePos = digitCounter - n
+    val delimeter = 10.0.pow(max(nRelativePos, 0)).toInt()
+
+    return (sqr / delimeter) % 10
+}
 /**
  * Сложная
  *
