@@ -245,4 +245,110 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+
+fun ru(n: Int): String {
+    return when (n) {
+        1 -> "один"
+        2 -> "два"
+        3 -> "три"
+        4 -> "четыре"
+        5 -> "пять"
+        6 -> "шесть"
+        7 -> "семь"
+        8 -> "восемь"
+        9 -> "девять"
+        10 -> "десять"
+        11 -> "одинадцать"
+        12 -> "двенадцать"
+        13 -> "тринадцать"
+        14 -> "четырнадцать"
+        15 -> "пятнадцать"
+        16 -> "шестнадцать"
+        17 -> "семнадцать"
+        18 -> "восемнадцать"
+        19 -> "девятнадцать"
+        20 -> "двадцать"
+        30 -> "тридцать"
+        40 -> "сорок"
+        50 -> "пятьдесят"
+        60 -> "шестьдесят"
+        70 -> "семьдесят"
+        80 -> "восемьдесят"
+        90 -> "девяносто"
+        100 -> "сто"
+        200 -> "двести"
+        300 -> "триста"
+        400 -> "четыреста"
+        500 -> "пятьсот"
+        600 -> "шестьсот"
+        700 -> "семьсот"
+        800 -> "восемьсот"
+        900 -> "девятьсот"
+        else -> ""
+    }
+}
+
+fun main() {
+//    russian(345123)
+    println(russian(771608))
+    println(russian(12764))
+    println(russian(411365))
+}
+
+fun getSymbolicValues(n: Int): MutableList<String> {
+    val result: MutableList<String> = mutableListOf();
+    val n1 = n % 10
+    val n10under20 = n % 100;
+    val n10 = n / 10 % 10
+    val n100 = n / 100 % 10
+
+    result += ru(n100 * 100)
+
+    if (n10under20 in 1..19) {
+        result += ru(n10under20)
+    } else {
+        result.addAll(listOf(ru(n10 * 10), ru(n1)))
+    }
+
+    return result.filter { it !== "" }.toMutableList()
+}
+
+fun pluralizeThousands(list: MutableList<String>) {
+    list.replaceAll {
+        when (it) {
+            "один" -> "одна"
+            "два" -> "две"
+            else -> it
+        }
+    }
+}
+
+fun addThousandsWord(thousands: Int, thousandsMutableList: MutableList<String>) {
+    val lastDigit = thousands % 10
+    val last2Digits = thousands % 100;
+
+    if (thousands == 0) {
+        return
+    }
+
+    thousandsMutableList += if (lastDigit == 1 && last2Digits != 11) {
+        "тысяча"
+    } else if (lastDigit in 2..4 && last2Digits !in 12..14) {
+        "тысячи"
+    } else {
+        "тысяч"
+    }
+}
+
+fun russian(n: Int): String {
+    val thousands = n / 1000
+    val hundreds = n % 1000
+
+    val thousandsMutableList = getSymbolicValues(thousands);
+    val hundredsMutableList = getSymbolicValues(hundreds);
+
+    pluralizeThousands(thousandsMutableList)
+    addThousandsWord(thousands, thousandsMutableList)
+
+    return (thousandsMutableList + hundredsMutableList).joinToString(" ")
+}
