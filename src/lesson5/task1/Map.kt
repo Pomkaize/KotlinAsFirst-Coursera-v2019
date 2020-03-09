@@ -280,4 +280,57 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val n = treasures.size
+    val treasuresNames = treasures.map { it.key }
+    val treasuresCapacity = treasures.map { it.value.first }
+    val treasuresPrice = treasures.map { it.value.second }
+    val priceMap = MutableList<MutableList<Int>>(n + 1) { MutableList<Int>(capacity + 1) { 0 } }
+
+    for (k in 1..n) {
+        for (s in 1..capacity) {
+            if (s >= treasuresCapacity[k - 1]) {
+                priceMap[k][s] =
+                    Math.max(priceMap[k - 1][s], priceMap[k - 1][s - treasuresCapacity[k - 1]] + treasuresPrice[k - 1])
+            } else {
+                priceMap[k][s] = priceMap[k - 1][s]
+            }
+        }
+    }
+
+
+    return getFormattedResponse(
+        priceMap,
+        treasuresNames,
+        treasuresCapacity,
+        n,
+        capacity
+    )
+}
+
+fun getFormattedResponse(
+    priceMap: MutableList<MutableList<Int>>,
+    treasuresNames: List<String>,
+    treasuresCapacity: List<Int>,
+    k: Int,
+    s: Int
+): Set<String> {
+    val result = mutableSetOf<String>()
+
+    fun rec(k: Int, s: Int) {
+        if (k < 0 || s < 0 || priceMap[k][s] == 0) {
+            return
+        }
+
+        if (priceMap[k - 1][s] == priceMap[k][s]) {
+            rec(k - 1, s)
+        } else {
+            rec(k - 1, s - treasuresCapacity[k - 1])
+            result.add(treasuresNames[k - 1])
+        }
+    }
+
+    rec(k, s)
+
+    return result
+}
